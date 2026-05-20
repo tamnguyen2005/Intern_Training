@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form id="form">
+      <label class="form-label">
+        Name
+        <input id="name" type="text" placeholder="Please enter your name..." />
+        <span id="name-error" class="error-messge"></span>
+      </label>
+      <label class="form-label">
+        Email
+        <input
+          id="email"
+          type="email"
+          placeholder="Please enter your email..."
+        />
+        <span id="email-error" class="error-messge"></span>
+      </label>
+      <label class="form-label">
+        Phone
+        <input
+          id="phone"
+          type="number"
+          placeholder="Please enter your phone..."
+        />
+        <span id="phone-error" class="error-messge"></span>
+      </label>
+      <label class="form-label">
+        Password
+        <input
+          id="password"
+          type="password"
+          placeholder="Please enter your password..."
+        />
+        <span id="password-error" class="error-messge"></span>
+        <div
+          id="strength-meter"
+          style="
+            height: 5px;
+            width: 0%;
+            background-color: gray;
+            transition: all 0.3s;
+          "
+        ></div>
+        <p id="strength-text" style="margin: 0"></p>
+      </label>
+      <label class="form-label">
+        Confirm
+        <input
+          id="confirm"
+          type="password"
+          placeholder="Please enter confirm password..."
+        />
+        <span id="confirm-error" class="error-messge"></span>
+      </label>
+      <button id="confirm-btn" disabled type="submit">Submit</button>
+    </form>
+    <script src="main.js"></script>
+  </body>
+</html>
