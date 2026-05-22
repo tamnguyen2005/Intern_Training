@@ -16,7 +16,10 @@ list.addEventListener("click", (event) => {
 });
 filtersContainer.addEventListener("click", (event) => {
   if (event.target.classList.contains("task-type")) {
+    const currentActive = document.querySelector(".task-type.isActive");
+    if (currentActive) currentActive.classList.remove("isActive");
     currentFilter = event.target.getAttribute("data-value");
+    event.target.classList.add("isActive");
     render(list, count, currentFilter);
   }
 });

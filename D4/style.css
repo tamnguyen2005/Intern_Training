@@ -1,0 +1,6 @@
+#type-container .task-type.isActive {
+  background-color: #2ecc71 !important; /* Màu xanh lá hiện đại */
+  color: white;
+  font-weight: bold;
+  border-color: #2ecc71;
+}

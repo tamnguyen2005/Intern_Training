@@ -11,10 +11,14 @@ const render = (element, data) => {
 };
 try {
   var result = await Promise.allSettled([
-    fetchWithRetry("https://dummyjson.com/quotes/random"),
+    fetchWithRetry("https://dummyjson.com/quotes/randomm"),
     fetchWithRetry("https://catfact.ninja/fact"),
     fetchWithRetry("https://jsonplaceholder.typicode.com/users?id=1"),
   ]);
+  result.forEach((r) => {
+    if (r.status === "rejected") console.log(r.reason);
+    else console.log(r.value);
+  });
   render(quote, result[0].value);
   render(fact, result[1].value);
   render(user, result[2].value);
