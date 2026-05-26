@@ -1,0 +1,11 @@
+import { Navigate, useLocation, useOutletContext } from "react-router-dom";
+
+const ProtectedRoute = ({ children }) => {
+  const { user } = useOutletContext();
+  const location = useLocation();
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+  return children;
+};
+export default ProtectedRoute;

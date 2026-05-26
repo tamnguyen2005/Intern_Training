@@ -1,0 +1,13 @@
+.detail-container {
+  display: flex;
+  gap: 10px;
+}
+.detail-container .detail-img {
+  flex: 0 0 50%;
+}
+.detail-img img{
+    width: 100%;
+}
+.detail-container .detail-content {
+  flex: 0 0 50%;
+}

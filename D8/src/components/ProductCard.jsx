@@ -1,5 +1,6 @@
 import "../css/ProductCard.css";
 import { Currency_format } from "../constant/config";
+import { Link } from "react-router-dom";
 const ProductCard = ({ product, handleAddToCart }) => {
   const formattedPrice = new Intl.NumberFormat(Currency_format.Locale, {
     style: Currency_format.Style,
@@ -7,7 +8,9 @@ const ProductCard = ({ product, handleAddToCart }) => {
   }).format(product.price);
   return (
     <div className="card-container">
-      <img src={product.url} alt="product-image" />
+      <Link to={`/product/${product.id}`}>
+        <img src={product.url} alt="product-image" />
+      </Link>
       <div className="card-content">
         <h3>{product.name}</h3>
         <h4>{formattedPrice}</h4>

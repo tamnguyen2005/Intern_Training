@@ -1,5 +1,6 @@
 import ProductCard from "./ProductCard";
 import "../css/ProductList.css";
+import { Link } from "react-router-dom";
 const ProductList = ({ products = [], handleAddToCart }) => {
   if (products.length === 0) {
     return (

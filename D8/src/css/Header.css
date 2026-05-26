@@ -4,7 +4,7 @@
   justify-content: space-between;
   align-items: center;
 }
-.cart img {
+/* .cart img {
   width: 30px;
   height: 30px;
 }
@@ -21,4 +21,13 @@
   background-color: aliceblue;
   display: inline-block;
   top: 0;
+} */
+.header-link {
+  display: flex;
+  gap: 10px;
+}
+.active {
+  color: #ff4757;
+  font-weight: bold;
+  border-bottom: 2px solid #ff4757;
 }
