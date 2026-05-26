@@ -1,3 +1,5 @@
+# Day 8
+
 # Product Catalog with Component-Based Architecture & Defensive UI
 
 A lightweight React application built with Vite, demonstrating modular component design, clean separation of concerns, and defensive UI patterns.
@@ -41,3 +43,45 @@ src/
 
 - Empty State Handling: Implemented an Early Return pattern inside ProductList to intercept empty arrays immediately, rendering a user-friendly message instead of a broken or blank layout.
 - Error Isolate Partitioning: Wrapped the product grid in a custom ErrorBoundary Class Component. If a runtime evaluation error crashes a single product card, the error is safely captured, maintaining the uptime of the Header and Footer.
+
+# Day 9
+
+# State Management & Unidirectional Data Flow
+
+A modular and highly interactive Shopping Cart application built with React and Vite. This project demonstrates state lifting, sibling-to-sibling component communication, and computed state optimization.
+
+## 🚀 Getting Started (Setup)
+
+Ensure you have **Node.js** installed. Open your terminal at the project root directory and execute the following commands:
+
+```bash
+# Navigate to the project directory
+cd D8
+
+# Install project dependencies
+npm install
+
+# Launch the development server
+npm run dev
+```
+
+src/
+├── components/ # Presentational (Dumb) components
+│ ├── Header.jsx # Displays the unified badge count
+│ ├── ProductList.jsx # Renders the grid layout for product cards
+│ ├── ProductCard.jsx # Displays individual items with an "Add to Cart" trigger
+│ ├── Cart.jsx # Renders the shopping cart area with an Empty State fallback
+│ ├── CartItem.jsx # Controls individual cart items (Quantity increment/decrement/delete)
+│ └── ErrorBoundary.jsx # Isolates component tree crashes (Catch-all mechanism)
+├── constant/ # Application-wide immutable configs and formatters
+├── css/ # Scoped CSS styling for layout and presentation
+├── data/ # Data layer containing mock repository data (`product.js`)
+├── App.jsx # Core Smart Component managing centralized states and mutations
+└── main.jsx # The official entry mount point for React
+
+# Architectural Decisions
+
+1. Centralized State
+
+- Decision: Lifted the cart state up entirely into the global container App.jsx. All secondary child components (Header, ProductList, Cart) operate as purely presentational (Dumb) components.
+- Rationale: This prevents state desynchronization across sibling components. Components never mutate state directly. Instead, they propagate action events upward via declarative callback functions (handleAddToCart, handleRemove, handleUpdate), maintaining a strictly predictable Unidirectional Data Flow.

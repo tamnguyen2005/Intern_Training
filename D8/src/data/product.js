@@ -34,6 +34,27 @@ const products = [
     price: 300000,
     description: "Lorem ipsum dolor sit amet",
   },
+  {
+    id: 6,
+    url: "https://images.unsplash.com/photo-1777997829741-07c88ed5bcbd?q=80&w=1325&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    name: "Product 6",
+    price: 350000,
+    description: "Lorem ipsum dolor sit amet",
+  },
+  {
+    id: 7,
+    url: "https://images.unsplash.com/photo-1773332585749-5146862ba746?q=80&w=1469&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    name: "Product 7",
+    price: 370000,
+    description: "Lorem ipsum dolor sit amet",
+  },
+  {
+    id: 8,
+    url: "https://images.unsplash.com/photo-1778789172863-a137613623e0?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    name: "Product 8",
+    price: 399000,
+    description: "Lorem ipsum dolor sit amet",
+  },
 ];
 const getProduct = () => {
   return products;
