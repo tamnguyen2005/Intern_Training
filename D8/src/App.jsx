@@ -43,7 +43,7 @@ function App() {
   const totalItem = cart.reduce((sum, i) => sum + i.quantity, 0);
   return (
     <>
-      <Header cart={totalItem} />
+      <Header totalItem={totalItem} />
       <main className="main-container">
         <ErrorBoundary>
           <ProductList products={products} handleAddToCart={handleAddToCart} />
