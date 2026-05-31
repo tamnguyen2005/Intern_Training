@@ -1,0 +1,17 @@
+.product-form-container {
+  background-color: white;
+  padding: 6px;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+}
+.product-form-title {
+  font-weight: bold;
+  margin-bottom: 6px;
+  text-align: center;
+}
+.form-label{
+    margin-bottom: 10px;
+    display: flex;
+    gap: 10px;
+}

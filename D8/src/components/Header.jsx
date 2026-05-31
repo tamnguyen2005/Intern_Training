@@ -20,6 +20,12 @@ const Header = ({ totalItem }) => {
           >
             Cart {totalItem}
           </NavLink>
+          <NavLink
+            to="/product/create"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            Create Product
+          </NavLink>
         </div>
       </div>
     </header>

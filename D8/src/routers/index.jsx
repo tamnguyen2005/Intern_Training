@@ -6,6 +6,7 @@ import Login from "../Pages/Login";
 import CartPage from "../Pages/CartPage";
 import MainLayout from "../components/MainLayout";
 import ProtectedRoute from "./ProtectedRoute";
+import ProductForm from "../components/ProductForm/ProductForm";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -31,6 +32,14 @@ export const router = createBrowserRouter([
       {
         path: "login",
         element: <Login />,
+      },
+      {
+        path: "product/create",
+        element: (
+          <ProtectedRoute>
+            <ProductForm />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
