@@ -170,20 +170,26 @@ pnpm run dev
 # Project Structure
 
 src/
-├── components/
+├── components/ # Presentational (Dumb) components
 │ ├── ProductForm/ # Encapsulated product generation domain
 │ │ ├── ProductForm.tsx # Component orchestrating the form layout and execution
 │ │ └── product.schema.ts # Immutable structural schema defining validation boundaries
-│ ├── MainLayout.jsx
-│ ├── Header.jsx
+│ ├── Header.jsx # Displays the navigation bar with active links & badge count
+│ ├── ProductList.jsx
+│ ├── ProductCard.jsx
+│ ├── Cart.jsx # Private cart view requiring authentication guard
+│ ├── CartItem.jsx
+│ ├── MainLayout.jsx # Master Layout wrapping persistent UI (Header/Footer) with <Outlet />
 │ └── ErrorBoundary.jsx
-├── router/
-│ └── index.jsx # Routes /products/create inside the navigation matrix
-├── css/
-│ └── ProductForm.css # Layout boundaries for input scopes and error callouts
+├── router/ # Layer decoupled from UI handling application pathways
+│ ├── index.jsx # Centralized configuration initializing createBrowserRouter
+│ └── ProtectedRoute.jsx # Guard intercepting unauthorized route executions
+├── constant/ # Application-wide immutable configs and formatters
+├── css/ # Scoped CSS styling for layout and presentation
+├── data/ # Data layer containing mock repository data (product.js)
 ├── vite-env.d.ts # Global environment types declaring custom file extension modules
-├── App.jsx
-└── main.jsx
+├── App.jsx # Smart Container managing state providers and routing injections
+└── main.jsx # The official entry mount point for the React application tree
 
 # Architectural Decisions
 
@@ -201,3 +207,80 @@ src/
 
 - Decision: Integrated an asymmetric isSubmitting flag tied into the disabled attributes of every fieldset component, coupled with an automated top-level Error Summary notification box mapping the global errors object.
 - Rationale: Asynchronous infrastructure calls are prone to human operational errors, such as clicking a submit button multiple times while waiting for a slower network pipeline. Enforcing hard input disabling (disabled={isSubmitting}) freezes the entire document context instantly during network execution, neutralizing race conditions or duplicated entity requests. Supplementing this with an Error Summary widget at the form's apex provides accessible layout diagnostics, aggregating deep nested validation flaws into a centralized reader view for fast, intuitive error resolution.
+
+# Day 12
+
+# Production-Level Network Architecture & Layered Defense
+
+A high-performance React network layer implementation decoupling presentational layouts from business data fetching infrastructure. This design utilizes a typed client-server communication abstraction, centralized gatekeeping interceptors, and a finite multi-state interface routing engine coupled with native request cancellation safeguards.
+
+# Getting started
+
+Ensure you have Node.js and pnpm installed on your machine. Open your terminal at the project root directory and run the following commands:
+
+```bash
+# Navigate to the project directory
+cd D8
+
+# Install required network ecosystem packages via pnpm
+pnpm install
+
+# Start the local development server
+pnpm run dev
+
+```
+
+# Project structure
+
+src/
+├── api/
+│ └── api.ts # Centralized Axios network interceptor hub (Core Network)
+├── assets/ # Static application resource vectors
+├── components/ # Presentational (Dumb) Components layer
+│ ├── ProductForm/ # Encapsulated product generation domain
+│ │ ├── ProductForm.tsx # Component orchestrating the form layout and execution
+│ │ └── product.schema.ts # Immutable structural schema defining validation boundaries
+│ ├── Cart.jsx # Private cart view component requiring authentication guard
+│ ├── CartItem.jsx # Granular card rendering for single basket entities
+│ ├── ErrorBoundary.jsx # Global fallback boundary catching unhandled rendering crashes
+│ ├── Header.jsx # Displays the navigation bar with active links & badge count
+│ ├── MainLayout.jsx # Master Layout wrapping persistent UI (Header/Footer) with <Outlet />
+│ ├── ProductCard.jsx # Presentational card component visualizing individual entities
+│ └── ProductList.jsx # Layout grid arranging multiple product card slots
+├── constant/ # System-wide immutable configuration metrics and formatters
+├── css/ # Scoped CSS styling for layout and error presentation boundaries
+├── data/ # Data layer containing mock repository data (product.js fallback)
+├── Pages/ # Smart Containers / Structural view boundary matrices
+│ ├── CartPage.jsx # Page wrapping cart domain logic
+│ ├── Home.tsx # Upgraded TSX view hub acting as landing node
+│ ├── Login.jsx # Presentation frame handling authorization submissions
+│ ├── NotFound.jsx # Fallback template routing incorrect endpoints
+│ └── ProductDetail.jsx # Dynamic node pulling individual entity metrics from API
+├── routers/ # Layer decoupled from UI handling application pathways
+│ ├── index.jsx # Centralized routing configurations initializing createBrowserRouter
+│ └── ProtectedRoute.jsx # Guard intercepting unauthorized route executions (Auth Guard)
+├── services/ # Stateless Layered Services (Data Management Hub)
+│ ├── auth.service.ts # Encapsulated authentication interface operations
+│ └── product.service.ts # Decoupled product mutation operations with AbortSignal triggers
+├── types/ # Pure Structural Interfaces (Zero Runtime Overhead)
+│ └── product.type.ts # Strict TypeScript mapping matching NestJS backend DTOs
+├── App.jsx # Smart Container managing state providers and routing injections
+├── main.jsx # The official entry mount point for the React application tree
+└── vite-env.d.ts # Global environment type definitions declaring VITE\_ env parameters
+
+# Architectural Decisions
+
+1. Tiered Architecture & Centralized Gatekeeping Interceptors
+
+- Decision: Extracted all HTTP communication logic out of UI components into a centralized network core (src/api/api.ts) and stateless business layers (src/services/). Set up a Request Interceptor to auto-inject Bearer tokens and a Response Interceptor to intercept global HTTP error codes (401, 500).
+- Rationale: Embedding raw axios URL routes directly into user views causes massive code duplication, brittle dependencies, and high security risks. By implementing a Tiered Architecture, presentational layouts remain pure and completely oblivious to infrastructure routes. The Response Interceptor establishes a centralized defensive line—if a 401 Unauthorized token expiry occurs anywhere across 100 components, the network controller automatically flushes decayed tokens and triggers a synchronized expulsion to the /login gateway without component-level try/catch repetition.
+
+2. Type-Safe Client Contracts with Zero Runtime Cost
+
+- Decision: Formulated strict structural contracts using TypeScript interface markers (src/types/) rather than concrete instance classes to shape incoming raw server entities.
+- Rationale: Concrete OOP class mapping patterns force the client CPU to run heavy data-parsing iterations (new Class(json)) across large arrays, severely lagging the UI. Opting for strict structural Interfaces provides rich IntelliSense autocomplete and compile-time defensive protection for the developer, yet completely evaporates during production build tasks (Zero Runtime Overhead), yielding the lightest and fastest vanilla JavaScript asset package bundle possible.
+
+3. Finite Multi-State Interface Grid & Short-Circuit Abort Controllers (Day 14 Defence)
+
+- Decision: Enforced a rigid state machine routing model dividing views into four specific outcomes: Loading (powered by shifting ghost Skeleton wireframe boxes), Error (with custom feedback callouts), Empty (defensively blocking white-screen voids), and Data-Ready. Coupled all hooks directly into a native browser AbortController cancellation signal pipeline.
+- Rationale: To eliminate fragile interface flicker, the rendering layout leverages deterministic conditional checks to cleanly slide from ghost skeleton templates into real entity cards. To neutralize massive backend resource drains caused by impatient users jumping back and forth across routes, the useEffect dọn dẹp (cleanup) function acts as an immediate structural break-point. When a component unmounts, it invokes abortController.abort(), instantly snapping the browser network channel shut, eliminating memory leaks, and blocking stale background data overrides (Race Conditions).

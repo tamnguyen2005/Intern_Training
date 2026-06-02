@@ -1,5 +1,5 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import Home from "../Pages/Home";
+import Home from "../Pages/Home.tsx";
 import NotFound from "../Pages/NotFound";
 import ProductDetail from "../Pages/ProductDetail";
 import Login from "../Pages/Login";

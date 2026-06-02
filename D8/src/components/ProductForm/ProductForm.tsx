@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { ProductFormData, productSchema } from "./product.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "../../css/ProductForm.css";
+import { productService } from "../../services/product.service";
 const ProductForm = () => {
   const {
     register,
@@ -14,9 +15,9 @@ const ProductForm = () => {
   });
   const submit = async (data: ProductFormData) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log("Dữ liệu được thêm lên server thành công", data);
-      alert("Hello World");
+      const newProduct = await productService.create(data);
+      console.log("Sản phẩm mới được server tạo thành công", newProduct);
+      alert(`Tạo sản phẩm mới thành công với ${newProduct.id}`);
       reset();
     } catch (error) {
       console.error("Đã có lỗi xảy ra !", error);
