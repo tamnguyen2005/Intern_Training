@@ -1,16 +1,14 @@
 import { useOutletContext } from "react-router-dom";
 import CartItem from "../components/CartItem";
+import { useCartStore } from "../stores/cart.store";
 const CartPage = () => {
-  const { cart, totalPrice, handleRemove, handleUpdate } = useOutletContext();
+  const item = useCartStore((state) => state.item);
+  const updateCart = useCartStore((state) => state.updateQuantity);
+  const removeCart = useCartStore((state) => state.removeFromCart);
   return (
     <>
-      {cart.map((i) => (
-        <CartItem
-          key={i.id}
-          onRemove={handleRemove}
-          onUpdateQuantity={handleUpdate}
-          item={i}
-        />
+      {item.map((i) => (
+        <CartItem key={i.product.id} onUpdateQuantity={updateCart} onRemove={removeCart} item={i} />
       ))}
     </>
   );

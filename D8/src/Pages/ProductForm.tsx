@@ -1,8 +1,8 @@
 import { useForm } from "react-hook-form";
-import { ProductFormData, productSchema } from "./product.schema";
+import { ProductFormData, productSchema } from "../schema/product.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import "../../css/ProductForm.css";
-import { productService } from "../../services/product.service";
+import "../css/ProductForm.css";
+import { productService } from "../services/product.service";
 const ProductForm = () => {
   const {
     register,

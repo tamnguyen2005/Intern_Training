@@ -2,7 +2,7 @@ import ProductCard from "./ProductCard";
 import "../css/ProductList.css";
 import { Link } from "react-router-dom";
 import SkeletonProductCard from "./SkeletonProductCard";
-const ProductList = ({ products = [], handleAddToCart, skeleton = false }) => {
+const ProductList = ({ products = [], skeleton = false }) => {
   if (skeleton === true) {
     return (
       <div className="product-container">
@@ -22,7 +22,7 @@ const ProductList = ({ products = [], handleAddToCart, skeleton = false }) => {
   return (
     <div className="product-container">
       {products.map((p) => (
-        <ProductCard key={p.id} product={p} handleAddToCart={handleAddToCart} />
+        <ProductCard key={p.id} product={p} />
       ))}
     </div>
   );
