@@ -284,3 +284,93 @@ src/
 
 - Decision: Enforced a rigid state machine routing model dividing views into four specific outcomes: Loading (powered by shifting ghost Skeleton wireframe boxes), Error (with custom feedback callouts), Empty (defensively blocking white-screen voids), and Data-Ready. Coupled all hooks directly into a native browser AbortController cancellation signal pipeline.
 - Rationale: To eliminate fragile interface flicker, the rendering layout leverages deterministic conditional checks to cleanly slide from ghost skeleton templates into real entity cards. To neutralize massive backend resource drains caused by impatient users jumping back and forth across routes, the useEffect dọn dẹp (cleanup) function acts as an immediate structural break-point. When a component unmounts, it invokes abortController.abort(), instantly snapping the browser network channel shut, eliminating memory leaks, and blocking stale background data overrides (Race Conditions).
+
+# Day 13
+
+A high-performance React network layer implementation decoupling presentational layouts from business data fetching infrastructure. This design utilizes a typed client-server communication abstraction, centralized gatekeeping interceptors, and a finite multi-state interface routing engine coupled with native request cancellation safeguards and atomic global state management
+
+# Getting started
+
+Ensure you have Node.js and pnpm installed on your machine. Open your terminal at the project root directory and run the following commands:
+
+```bash
+# Navigate to the project directory
+cd D8
+
+# Install required network ecosystem packages via pnpm
+pnpm install
+
+# Start the local development server
+pnpm run dev
+```
+
+# Project structure
+
+src/
+├── api/
+│ └── axiosClient.ts # Centralized Axios network interceptor hub (Core Network with JWT injection)
+├── assets/ # Static application resource vectors
+├── components/ # Presentational (Dumb) Components layer
+│ ├── ProductForm/ # Encapsulated product generation domain
+│ │ ├── ProductForm.tsx # Component orchestrating the form layout and execution
+│ │ └── product.schema.ts # Immutable structural schema defining validation boundaries
+│ ├── LoginForm/ # Encapsulated authentication generation domain (Upgraded)
+│ │ └── login.schema.ts # Immutable structural schema defining email/password validation
+│ ├── Cart.jsx # Private cart view component requiring authentication guard
+│ ├── CartItem.jsx # Granular card rendering for single basket entities
+│ ├── ErrorBoundary.jsx # Global fallback boundary catching unhandled rendering crashes
+│ ├── Header.jsx # Displays the navigation bar with active links, theme toggle & badge count
+│ ├── MainLayout.jsx # Master Layout wrapping persistent UI & managing global Dark Mode class
+│ ├── ProductCard.jsx # Presentational card component visualizing individual entities
+│ └── ProductList.jsx # Layout grid arranging multiple product card slots
+├── constant/ # System-wide immutable configuration metrics and formatters
+├── css/ # Scoped CSS styling for layout and error presentation boundaries
+├── data/ # Data layer containing mock repository data (product.js fallback)
+├── Pages/ # Smart Containers / Structural view boundary matrices
+│ ├── CartPage.jsx # Page wrapping cart domain logic connected to useCartStore
+│ ├── Home.tsx # Upgraded TSX view hub acting as landing node
+│ ├── Login.tsx # Presentation frame handling authorization submissions with Zod Schema
+│ ├── NotFound.jsx # Fallback template routing incorrect endpoints
+│ └── ProductDetail.jsx # Dynamic node pulling individual entity metrics from API
+├── routers/ # Layer decoupled from UI handling application pathways
+│ ├── index.jsx # Centralized routing configurations initializing createBrowserRouter
+│ └── ProtectedRoute.jsx # Guard intercepting unauthorized route executions (Auth Guard via useAuthStore)
+├── services/ # Stateless Layered Services (Data Management Hub)
+│ ├── auth.service.ts # Encapsulated authentication interface operations
+│ └── product.service.ts # Decoupled product mutation operations with AbortSignal triggers
+├── stores/ # Atomic Global State Layer (Zustand Micro-Stores)
+│ ├── auth.store.ts # Auth store managing user profile, tokens, and persistent sessions
+│ ├── cart.store.ts # Cart store executing immutable CRUD operations & localStorage synchronization
+│ └── ui.store.ts # UI store controlling global theme mechanics (Dark/Light) with partial persistence
+├── types/ # Pure Structural Interfaces (Zero Runtime Overhead)
+│ └── product.type.ts # Strict TypeScript mapping matching NestJS backend DTOs
+├── App.jsx # Smart Container managing state providers and routing injections
+├── main.jsx # The official entry mount point for the React application tree
+└── vite-env.d.ts # Global environment type definitions declaring VITE\_ env parameters
+
+# Architectural Decisions
+
+1. Atomic Global State Isolation via Zustand Micro-Stores
+
+- Decision: Avoided a single monolithic global state tree by decomposing the application's shared data layer into three autonomous, domain-specific Micro-Stores: auth.store.ts, cart.store.ts, and ui.store.ts.
+- Rationale: Forcing localized component states or unrelated domain metrics into a single giant store triggers widespread re-render cascades across the entire virtual DOM. Using Zustand allows us to initialize lightweight, decoupled hooks. This architectural separation ensures that adding an item to the basket or toggling a visual menu layout operates in independent memory contexts, adhering strictly to the principle of single responsibility.
+
+2. Specialized Selectors as Render Guardrails (Anti-Pattern Defense)
+
+- Decision: Enforced a strict rule prohibiting consumer components (Header.jsx, CartPage.jsx) from extracting raw, unmapped store objects. Components must subscribe to global state exclusively through deterministic functional selectors (e.g., filtering state down to primitive computed numeric values like totalItems).
+- Rationale: Unchecked global state consumption introduces the critical No Selectors anti-pattern, where a component re-renders on every reference shift within the store. By utilizing selectors, Zustand compares the primitive output value rather than the root array's memory pointer (Object.is or ===). If a user updates an unlinked field (such as an order comment), the primitive number outputs remain identical, completely short-circuiting unnecessary render phases and protecting the CPU.
+
+3. Defensive Immutability and Postfix Mutation Bans
+
+- Decision: Established an absolute prohibition against direct memory mutations—specifically banning mutating JavaScript array and object operations (such as .push() or the postfix ++ operator) inside store modifiers. All transitions are handled via pure data mapping expressions (.map(), .filter()).
+- Rationale: Modifying attributes directly on an existing object reference modifies the underlying data structure in place within the heap without generating a new memory pointer. This breaks Zustand’s shallow reference evaluation, leading to frozen application interfaces that fail to recognize structural state updates. Furthermore, reference pollution permanently breaks historical snapshot integrity, rendering time-travel debugging completely useless and disabling automatic data caching layers.
+
+4. Domain Filtering for Localized Storage Persistence
+
+- Decision: Configured granular middleware synchronization layers using the persist engine, augmented by explicit storage projection configurations (partialize slice isolation within the layout configurations).
+- Rationale: While critical cross-session identifiers (such as active shopping items and secure authentication vectors) must persist across forced hard-refreshes, storing temporary user interface coordinates (like an active navigation side drawer status) pollutes local disk structures. Restricting persistence targets to critical long-term assets ensures the system maintains low-latency data structures while preventing configuration drift when a page initializes.
+
+5. Transparent Debugging via Action Traceability
+
+- Decision: Wrapped all execution blocks in explicit semantic identifiers passed via the centralized devtools tracking architecture (e.g., 'cart/addToCart', 'auth/logout').
+- Rationale: Uncontrolled, untraceable dispatch systems make monitoring state flow impossible as systems grow. Explicit state labeling creates a reliable, step-by-step audit trail: Action -> State Snapshot -> Controlled UI Render. This structure allows developers to easily trace the exact cause of any interface mutation directly inside the debugging terminal.
