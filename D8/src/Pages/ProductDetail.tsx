@@ -1,13 +1,22 @@
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import getProduct from "../data/product";
 import "../css/ProductDetail.css";
-
+import { useEffect, useState } from "react";
+import { Product } from "../types/product.type";
+import { productService } from "../services/product.service";
+import { useCartStore } from "../stores/cart.store";
+import { useFetchById } from "../hooks/useFetchById";
 const ProductDetail = () => {
-  const products = getProduct();
   const { id } = useParams();
   const navigate = useNavigate();
-  const { handleAddToCart } = useOutletContext();
-  const product = products.find((p) => p.id === parseInt(id));
+  const addToCart = useCartStore((state) => state.addToCart);
+  const { product, isLoading, error } = useFetchById(id!);
+  if (isLoading) {
+    return <h1>Sản phẩm đang được tải</h1>;
+  }
+  if (error) {
+    return <h1>Có lỗi xảy ra ${error}</h1>;
+  }
   if (!product) {
     return (
       <>
@@ -19,7 +28,7 @@ const ProductDetail = () => {
   return (
     <div className="detail-container">
       <div className="detail-img">
-        <img src={product.url} alt="" />
+        <img src={product.imageUrl} alt="" />
       </div>
       <div className="detail-cotent">
         <button
@@ -33,7 +42,7 @@ const ProductDetail = () => {
         <p>{product.description}</p>
         <button
           onClick={() => {
-            handleAddToCart(product);
+            addToCart(product);
           }}
         >
           Add to cart

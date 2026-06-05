@@ -35,3 +35,9 @@
   font-weight: bold;
   border-bottom: 2px solid #ff4757;
 }
+.header {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  margin-bottom: 10px;
+}

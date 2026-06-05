@@ -1,0 +1,9 @@
+.internet-banner {
+  background-color: crimson;
+  display: flex;
+  padding: 5px;
+  justify-content: center;
+  margin-bottom: 10px;
+  position: sticky;
+  top: 0;
+}

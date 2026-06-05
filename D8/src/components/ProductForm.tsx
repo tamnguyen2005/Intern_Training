@@ -3,30 +3,69 @@ import { ProductFormData, productSchema } from "../schema/product.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "../css/ProductForm.css";
 import { productService } from "../services/product.service";
-const ProductForm = () => {
+import { Product } from "../types/product.type";
+import { useEffect } from "react";
+interface ProductFormProps {
+  initialData?: Product | null;
+  onSubmitSuccess?: () => void;
+}
+const ProductForm = ({ initialData, onSubmitSuccess }: ProductFormProps) => {
+  const isEdit = !!initialData;
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, dirtyFields },
   } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     mode: "onTouched",
   });
+  useEffect(() => {
+    if (initialData) {
+      reset(initialData);
+    } else {
+      reset({
+        name: "",
+        category: "",
+        description: "",
+        imageUrl: "",
+        price: 0,
+      });
+    }
+  }, [initialData, reset]);
   const submit = async (data: ProductFormData) => {
     try {
-      const newProduct = await productService.create(data);
-      console.log("Sản phẩm mới được server tạo thành công", newProduct);
-      alert(`Tạo sản phẩm mới thành công với ${newProduct.id}`);
-      reset();
-    } catch (error) {
-      console.error("Đã có lỗi xảy ra !", error);
+      if (isEdit && initialData) {
+        const changedFields: Partial<ProductFormData> = {};
+        Object.keys(dirtyFields).forEach((key) => {
+          const k = key as keyof ProductFormData;
+          if (dirtyFields[k]) {
+            changedFields[k] = data[k] as any;
+          }
+        });
+        if (Object.keys(changedFields).length === 0) {
+          alert("Bạn chưa thay đổi thông tin nào !");
+          return;
+        }
+        await productService.update(initialData.id, changedFields);
+        alert("Cập nhật sản phẩm thành công !");
+      } else {
+        await productService.create(data);
+        alert("Tạo sản phẩm mới thành công !");
+      }
+      if (onSubmitSuccess) {
+        onSubmitSuccess();
+      }
+    } catch (err) {
+      console.error("Đã có lỗi xảy ra", err);
     }
   };
   const errorEntries = Object.entries(errors);
   return (
     <div className="product-form-container">
-      <h2 className="product-form-title">Form tạo sản phẩm mới</h2>
+      <h2 className="product-form-title">
+        {isEdit ? "Form cập nhật sản phẩm" : "Form tạo sản phẩm mới"}
+      </h2>
       {errorEntries.length > 0 && (
         <ul>
           {errorEntries.map(([key, error]) => (
@@ -90,7 +129,11 @@ const ProductForm = () => {
           )}
         </div>
         <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Hệ thống đang xử lý" : "Tạo sản phẩm"}
+          {isSubmitting
+            ? "Hệ thống đang xử lý"
+            : isEdit
+              ? "Cập nhật sản phẩm"
+              : "Tạo sản phẩm mới"}
         </button>
       </form>
     </div>

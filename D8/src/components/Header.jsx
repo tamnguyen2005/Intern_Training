@@ -13,7 +13,7 @@ const Header = () => {
   const toggleDarkMode = useUIStore((state) => state.toggleDarkMode);
   const isDarkMode = useUIStore((state) => state.isDarkMode);
   return (
-    <header>
+    <header className="header">
       <div className="header-container">
         <div className="header-logo">
           <NavLink to="/">🛒 My Shop</NavLink>
@@ -27,10 +27,10 @@ const Header = () => {
             Cart {totalItem}
           </NavLink>
           <NavLink
-            to="/product/create"
+            to="/product/manage"
             className={({ isActive }) => (isActive ? "active" : "")}
           >
-            Create Product
+            Manage Product
           </NavLink>
           {isAuthenticated ? (
             <div>

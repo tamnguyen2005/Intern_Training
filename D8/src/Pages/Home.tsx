@@ -1,42 +1,7 @@
-import { useEffect, useState } from "react";
 import ProductList from "../components/ProductList";
-import getProduct from "../data/product";
-import { useOutletContext } from "react-router-dom";
-import { Product } from "../types/product.type";
-import { productService } from "../services/product.service";
+import { useFetchAll } from "../hooks/useFetchAll";
 const Home = () => {
-  // const [products, setProducts] = useState<Product[]>([]);
-  const products=getProduct();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  // useEffect(() => {
-  //   const abortController = new AbortController();
-  //   const fetchProducts = async () => {
-  //     try {
-  //       setIsLoading(true);
-  //       setError(null);
-  //       const result = await productService.getAll(
-  //         undefined,
-  //         abortController.signal,
-  //       );
-  //       setProducts(result.data);
-  //     } catch (err: any) {
-  //       if (err.name === "CanceledError" || err.name === "canceled") {
-  //         console.log("Request cũ đã được hủy thành công ngầm dưới nền");
-  //         return;
-  //       }
-  //       setError(err?.message || "Có lỗi xảy ra với danh sách sản phẩm");
-  //     } finally {
-  //       if (!abortController.signal.aborted) {
-  //         setIsLoading(false);
-  //       }
-  //     }
-  //   };
-  //   fetchProducts();
-  //   return () => {
-  //     abortController.abort();
-  //   };
-  // }, []);
+  const { products, isLoading, error } = useFetchAll();
   if (isLoading) {
     return <ProductList skeleton={true} />;
   }

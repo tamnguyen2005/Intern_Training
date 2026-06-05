@@ -3,3 +3,4 @@ export const Currency_format = {
   Currency: "VND",
   Style: "currency",
 };
+export const SkeletonSize = 8;

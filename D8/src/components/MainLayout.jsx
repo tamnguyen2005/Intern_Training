@@ -1,47 +1,29 @@
 import Header from "./Header";
 import Footer from "./Footer";
 import { Outlet } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUIStore } from "../stores/ui.store";
+import ErrorBoundary from "./ErrorBoundary";
+import "../css/MainLayout.css";
 const MainLayout = () => {
-  // const [cart, setCart] = useState([]);
-  // const [user, setUser] = useState(null);
-  // const handleAddToCart = (product) => {
-  //   const existingItem = cart.find((c) => c.id === product.id);
-  //   if (existingItem) {
-  //     setCart(
-  //       cart.map((c) =>
-  //         c.id !== product.id ? c : { ...c, quantity: c.quantity + 1 },
-  //       ),
-  //     );
-  //   } else {
-  //     setCart([...cart, { ...product, quantity: 1 }]);
-  //   }
-  // };
-  // const handleRemove = (product) => {
-  //   if (product.quantity === 1) {
-  //     setCart(cart.filter((i) => i.id !== product.id));
-  //   } else {
-  //     setCart(
-  //       cart.map((i) =>
-  //         i.id === product.id ? { ...i, quantity: i.quantity - 1 } : i,
-  //       ),
-  //     );
-  //   }
-  // };
-  // const handleUpdate = (product) => {
-  //   setCart(
-  //     cart.map((i) =>
-  //       i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i,
-  //     ),
-  //   );
-  // };
-  // const login = () => {
-  //   setUser({ name: "Tam", role: "Sinh Vien" });
-  // };
-  // const totalPrice = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
-  // const totalItem = cart.reduce((sum, i) => sum + i.quantity, 0);
   const isDarkMode = useUIStore((state) => state.isDarkMode);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      console.log("Đã khôi phục kết nối internet !");
+    };
+    const handleOffline = () => {
+      setIsOnline(false);
+      console.log("Bạn đang ở chế độ ngoại tuyến !");
+    };
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
   return (
     <div
       style={
@@ -50,20 +32,17 @@ const MainLayout = () => {
           : { color: "black", backgroundColor: "white" }
       }
     >
+      {!isOnline && (
+        <div className="internet-banner">
+          ⚠️ Không có kết nối Internet. Vui lòng kiểm tra lại đường truyền mạng!
+        </div>
+      )}
       <Header />
-      <main className="main-container">
-        <Outlet
-        // context={{
-        //   user,
-        //   cart,
-        //   totalItem,
 
-        //   handleAddToCart,
-        //   handleRemove,
-        //   handleUpdate,
-        //   login,
-        // }}
-        />
+      <main className="main-container">
+        <ErrorBoundary>
+          <Outlet />
+        </ErrorBoundary>
       </main>
       <Footer />
     </div>

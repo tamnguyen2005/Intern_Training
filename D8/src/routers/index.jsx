@@ -1,12 +1,14 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Home from "../Pages/Home.tsx";
 import NotFound from "../Pages/NotFound";
-import ProductDetail from "../Pages/ProductDetail";
+import ProductDetail from "../Pages/ProductDetail.tsx";
 import Login from "../Pages/Login.tsx";
 import CartPage from "../Pages/CartPage";
 import MainLayout from "../components/MainLayout";
 import ProtectedRoute from "./ProtectedRoute";
-import ProductForm from "../Pages/ProductForm.tsx";
+import ProductManagement from "../Pages/ProductManagement.tsx";
+import ProductCreatePage from "../Pages/ProductCreatePage.tsx";
+import ProductUpdatePage from "../Pages/ProductUpdatePage.tsx";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -37,9 +39,21 @@ export const router = createBrowserRouter([
         path: "product/create",
         element: (
           <ProtectedRoute>
-            <ProductForm />
+            <ProductCreatePage />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "product/update/:id",
+        element: (
+          <ProtectedRoute>
+            <ProductUpdatePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "product/manage",
+        element: <ProductManagement />,
       },
     ],
   },

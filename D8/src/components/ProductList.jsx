@@ -2,11 +2,12 @@ import ProductCard from "./ProductCard";
 import "../css/ProductList.css";
 import { Link } from "react-router-dom";
 import SkeletonProductCard from "./SkeletonProductCard";
+import { SkeletonSize } from "../constant/config";
 const ProductList = ({ products = [], skeleton = false }) => {
   if (skeleton === true) {
     return (
       <div className="product-container">
-        {Array.from({ length: 8 }).map((_, index) => (
+        {Array.from({ length: SkeletonSize }).map((_, index) => (
           <SkeletonProductCard key={index} />
         ))}
       </div>
