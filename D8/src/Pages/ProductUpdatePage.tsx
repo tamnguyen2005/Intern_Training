@@ -13,7 +13,7 @@ const ProductUpdatePage = () => {
     return (
       <ProductForm
         initialData={product}
-        onSubmitSuccess={() => navigate("/")}
+        onSubmitSuccess={() => navigate("/product/manage")}
       />
     );
 };

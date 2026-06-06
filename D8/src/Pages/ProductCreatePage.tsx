@@ -3,6 +3,6 @@ import ProductForm from "../components/ProductForm";
 
 const ProductCreatePage = () => {
   const navigate = useNavigate();
-  return <ProductForm onSubmitSuccess={() => navigate("/")} />;
+  return <ProductForm onSubmitSuccess={() => navigate("/product/manage")} />;
 };
 export default ProductCreatePage;
