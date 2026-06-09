@@ -9,6 +9,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import ProductManagement from "../Pages/ProductManagement.tsx";
 import ProductCreatePage from "../Pages/ProductCreatePage.tsx";
 import ProductUpdatePage from "../Pages/ProductUpdatePage.tsx";
+import Register from "../Pages/Register.tsx";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -52,8 +53,16 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: "register",
+        element: <Register />,
+      },
+      {
         path: "product/manage",
-        element: <ProductManagement />,
+        element: (
+          <ProtectedRoute>
+            <ProductManagement />
+          </ProtectedRoute>
+        ),
       },
     ],
   },

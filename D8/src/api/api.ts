@@ -1,10 +1,11 @@
 import axios from "axios";
+import { useAuthStore } from "../stores/auth.store";
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("accessToken");
+    const token = useAuthStore.getState().token;
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -16,8 +17,12 @@ api.interceptors.response.use(
   (response) => response.data,
   (error) => {
     const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      localStorage.removeItem("accessToken");
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      error.message !== "canceled"
+    ) {
+      useAuthStore.getState().logout();
       window.location.href = "/login";
     }
     return Promise.reject(error?.response?.data || error.message);
